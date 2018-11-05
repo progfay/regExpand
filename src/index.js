@@ -36,9 +36,7 @@ const scan = (pattern) => {
 
 const parse = (element) => {
   if (typeof element === 'string') {
-    return element
-      .split('|')
-      .filter(s => s)
+    return element.split('|').filter(s => s)
   } else {
     return element.map(parse)
   }
