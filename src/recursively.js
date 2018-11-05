@@ -1,4 +1,5 @@
-const expand = (pattern) => {
+const expand = (pattern, dict = null) => {
+  if (dict) pattern = pattern.replace(/(?<=\{).*?(?=\})/g, s => (dict[s] || s))
   const match = /^(?<prefix>.*?)\((?<expression>[^\(\)]*)\)(?<option>\??)(?<suffix>.*)$/.exec(pattern)
   if (!match) return pattern.split(`|`)
   const { prefix, expression, option, suffix } = match.groups
@@ -7,4 +8,4 @@ const expand = (pattern) => {
     .reduce((a, b) => [...a, ...b])))
 }
 
-console.log(expand('(a|b|(c|d)|e|f(g|h)?)'))
+console.log(expand('{num}(a|b|(c|d)|e|f(g|h)?){num}', { num: '(0|1|2|3|4|5|6|7|8|9)' }))
