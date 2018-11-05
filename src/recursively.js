@@ -1,5 +1,10 @@
 const expand = (pattern, dict = null) => {
-  if (dict) pattern = pattern.replace(/(?<=\{).*?(?=\})/g, s => (dict[s] || s))
+  if (dict) {
+    pattern = pattern.replace(/\{.*?\}/g, s => {
+      s = s.slice(1, -1)
+      return dict[s] || s
+    })
+  }
   const match = /^(?<prefix>.*?)\((?<expression>[^\(\)]*)\)(?<option>\??)(?<suffix>.*)$/.exec(pattern)
   if (!match) return pattern.split(`|`)
   const { prefix, expression, option, suffix } = match.groups
