@@ -1,17 +1,20 @@
+const regExp = /^(?<prefix>.*?)\((?<expression>[^\(\)]*)\)(?<option>\??)(?<suffix>.*)$/
+
 const expand = (pattern, dict = null) => {
   if (dict) {
-    pattern = pattern.replace(/\{.*?\}/g, s => {
-      s = s.slice(1, -1)
-      return dict[s] || s
+    pattern = pattern.replace(/\{.*?\}/g, key => {
+      key = key.slice(1, -1)
+      return dict[key] || key
     })
   }
-  const match = /^(?<prefix>.*?)\((?<expression>[^\(\)]*)\)(?<option>\??)(?<suffix>.*)$/.exec(pattern)
+
+  const match = regExp.exec(pattern)
   if (!match) return pattern.split(`|`)
   const { prefix, expression, option, suffix } = match.groups
   return expand(expression + (option ? '|' : ''))
-    .map(e => expand(prefix + e + suffix))
+    .map(exp => expand(prefix + exp + suffix))
     .reduce((a, b) => [...a, ...b])
     .filter((x, i, self) => self.indexOf(x) === i)
 }
 
-console.log(expand('{num}(a|b|(c|d)|e|f(g|h)?){num}', { num: '(0|1|2|3|4|5|6|7|8|9)' }))
+console.log(expand('{num}(a|b|(c|d)|e|f(g|h)?)', { num: '(0|1|2|3|4|5|6|7|8|9)' }))
