@@ -29,7 +29,8 @@ const scan = (pattern) => {
         .concat(scan(pattern.substring(pairClosingBracketIndex + 1)) || [])
 
     default:
-      return [pattern.substring(0, openingBracketIndex)].concat(scan(pattern.substring(openingBracketIndex)) || [])
+      return [pattern.substring(0, openingBracketIndex)]
+        .concat(scan(pattern.substring(openingBracketIndex)) || [])
   }
 }
 
