@@ -1,4 +1,4 @@
-const regExp = /^(?<prefix>.*?)\((?<expression>[^\(\)]*)\)(?<option>\??)(?<suffix>.*)$/
+const regExp = /^(.*?)\(([^\(\)]*)\)(\??)(.*)$/
 
 const expand = (pattern, dict = null) => {
   if (dict) {
@@ -10,7 +10,7 @@ const expand = (pattern, dict = null) => {
 
   const match = regExp.exec(pattern)
   if (!match) return pattern.split(`|`)
-  const { prefix, expression, option, suffix } = match.groups
+  const [_, prefix, expression, option, suffix] = match
   return expand(expression + (option ? '|' : ''))
     .map(exp => expand(prefix + exp + suffix))
     .reduce((a, b) => [...a, ...b])
