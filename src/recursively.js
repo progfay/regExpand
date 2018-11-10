@@ -1,5 +1,17 @@
 console.time('time')
+
+const finder = /^(.*?)(\{[^\{\}]*\})(.*)$/
 const regExp = /^(.*?)\(([^\(\)]*)\)(\??)(.*)$/
+
+const translate = (pattern, dict) => {
+  const match = finder.exec(pattern)
+  if (!match) return [pattern]
+  const [, prefix, word, suffix] = match
+  return dict[word.slice(1, -1)]
+    .map(vocabulary => translate(prefix + vocabulary + suffix, dict))
+    .reduce((a, b) => [...a, ...b])
+    .filter((x, i, self) => self.indexOf(x) === i)
+}
 
 const _expand = (pattern) => {
   const match = regExp.exec(pattern)
@@ -12,14 +24,10 @@ const _expand = (pattern) => {
 }
 
 const expand = (pattern, dict = null) => {
-  if (dict) {
-    pattern = pattern.replace(/\{.*?\}/g, key => {
-      key = key.slice(1, -1)
-      return dict[key] || key
-    })
-  }
-
-  return _expand(pattern)
+  if (!dict) return _expand(pattern)
+  return translate(pattern, dict)
+    .map(_expand)
+    .reduce((a, b) => [...a, ...b])
 }
 
 for (let i = 0; i < 10000; i++) {
