@@ -10,7 +10,7 @@ const expand = (pattern, dict = null) => {
 
   const match = regExp.exec(pattern)
   if (!match) return pattern.split(`|`)
-  const [_, prefix, expression, option, suffix] = match
+  const [, prefix, expression, option, suffix] = match
   return expand(expression + (option ? '|' : ''))
     .map(exp => expand(prefix + exp + suffix))
     .reduce((a, b) => [...a, ...b])
