@@ -1,3 +1,4 @@
+console.time('time')
 const regExp = /^(.*?)\(([^\(\)]*)\)(\??)(.*)$/
 
 const _expand = (pattern) => {
@@ -21,4 +22,7 @@ const expand = (pattern, dict = null) => {
   return _expand(pattern)
 }
 
-console.log(expand('{num}(a|b|(c|d)|e|f(g|h)?)', { num: '(0|1|2|3|4|5|6|7|8|9)' }))
+for (let i = 0; i < 10000; i++) {
+  expand('{num}(a|b|(c|d)|e|f(g|h)?)', { num: '(0|1|2|3|4|5|6|7|8|9)' })
+}
+console.timeEnd('time')
