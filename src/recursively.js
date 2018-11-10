@@ -1,8 +1,8 @@
-const finder = /^(.*?)(\{[^\{\}]*\})(.*)$/
-const regExp = /^(.*?)\(([^\(\)]*)\)(\??)(.*)$/
+const findBrace = /^(.*?)(\{[^\{\}]*\})(.*)$/
+const findBracket = /^(.*?)\(([^\(\)]*)\)(\??)(.*)$/
 
 const translate = (pattern, dict) => {
-  const match = finder.exec(pattern)
+  const match = findBrace.exec(pattern)
   if (!match) return [pattern]
   const [, prefix, word, suffix] = match
   return dict[word.slice(1, -1)]
@@ -12,7 +12,7 @@ const translate = (pattern, dict) => {
 }
 
 const _expand = (pattern) => {
-  const match = regExp.exec(pattern)
+  const match = findBracket.exec(pattern)
   if (!match) return pattern.split(`|`)
   const [, prefix, expression, option, suffix] = match
   return _expand(expression + (option ? '|' : ''))
