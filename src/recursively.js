@@ -26,6 +26,7 @@ const expand = (pattern, dict = null) => {
   return translate(pattern, dict)
     .map(_expand)
     .reduce((a, b) => [...a, ...b])
+    .filter((x, i, self) => self.indexOf(x) === i)
 }
 
 module.exports = expand
