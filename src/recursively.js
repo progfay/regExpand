@@ -1,9 +1,9 @@
 const findBrace = /^(.*?)(\{[^\{\}]*\})(.*)$/
 const findBracket = /^(.*?)\(([^\(\)]*)\)(\??)(.*)$/
 
-const translate = (pattern, dict) => {
-  const match = findBrace.exec(pattern)
-  if (!match) return [pattern]
+const translate = (text, dict) => {
+  const match = findBrace.exec(text)
+  if (!match) return [text]
   const [, prefix, word, suffix] = match
   return dict[word.slice(1, -1)]
     .map(vocabulary => translate(prefix + vocabulary + suffix, dict))
@@ -11,9 +11,9 @@ const translate = (pattern, dict) => {
     .filter((x, i, self) => self.indexOf(x) === i)
 }
 
-const _expand = (pattern) => {
-  const match = findBracket.exec(pattern)
-  if (!match) return pattern.split(`|`)
+const _expand = (text) => {
+  const match = findBracket.exec(text)
+  if (!match) return text.split(`|`)
   const [, prefix, expression, option, suffix] = match
   return _expand(expression + (option ? '|' : ''))
     .map(exp => _expand(prefix + exp + suffix))
@@ -21,9 +21,9 @@ const _expand = (pattern) => {
     .filter((x, i, self) => self.indexOf(x) === i)
 }
 
-const expand = (pattern, dict = null) => {
-  if (!dict) return _expand(pattern)
-  return translate(pattern, dict)
+const expand = (text, dict = null) => {
+  if (!dict) return _expand(text)
+  return translate(text, dict)
     .map(_expand)
     .reduce((a, b) => [...a, ...b])
     .filter((x, i, self) => self.indexOf(x) === i)
